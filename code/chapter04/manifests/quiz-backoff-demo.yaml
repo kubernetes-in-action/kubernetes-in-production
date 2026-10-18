@@ -1,0 +1,24 @@
+# Used in section 4.2.3 "Observing controller behaviour" retry/backoff
+# logging demo.  A StatefulSet in its own namespace, held in place
+# with a finalizer so that deleting its namespace produces the
+# controller manager's retry logging.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quiz
+  namespace: quiz-backoff-demo
+spec:
+  serviceName: quiz
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quiz
+  template:
+    metadata:
+      labels:
+        app: quiz
+    spec:
+      containers:
+      - name: quiz
+        image: busybox:1.38
+        command: ["sleep", "3600"]

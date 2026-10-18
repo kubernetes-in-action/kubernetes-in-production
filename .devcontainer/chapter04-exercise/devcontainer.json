@@ -1,0 +1,29 @@
+{
+  "name": "Chapter 4 Exercise: The Orphaned Pod",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "none"
+    },
+    "ghcr.io/kubernetes-in-action/devcontainer-features/kind:1": {
+      "version": "latest"
+    },
+    "ghcr.io/kubernetes-in-action/devcontainer-features/kustomize:1": {
+      "version": "latest"
+    }
+  },
+  "workspaceFolder": "/workspaces/kubernetes-in-production/exercises/chapter04",
+  "postStartCommand": "bash scripts/bootstrap.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools"
+      ]
+    }
+  }
+}

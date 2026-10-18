@@ -1,0 +1,26 @@
+# The nightly quiz-stats aggregation CronJob introduced in section 4.5.2
+# (CronJob scheduling). Runs via mongosh against quiz-0.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: quiz-stats
+  namespace: quiz-ns
+spec:
+  schedule: "0 2 * * *"   # 2 AM every day
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: aggregator
+            image: mongo:8
+            command:
+            - mongosh
+            - --host
+            - quiz-0.quiz.quiz-ns.svc.cluster.local
+            - --eval
+            - "db.getSiblingDB('kiada').responses.aggregate([{$group: {_id: '$questionId', answers: {$sum: 1}}}])"

@@ -1,0 +1,24 @@
+# The mongosh connectivity check Job introduced in section 4.5.1 (Job
+# execution and completion tracking).  This job is a stand-in for the kind of
+# pre-migration check you would run against quiz-0 before a real migration.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: quiz-migration-check
+  namespace: quiz-ns
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: check
+        image: mongo:8
+        command:
+        - mongosh
+        - --host
+        - quiz-0.quiz.quiz-ns.svc.cluster.local
+        - --eval
+        - "db.adminCommand('ping')"

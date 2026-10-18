@@ -1,0 +1,18 @@
+# Used only by the 4.5.1 backoffLimit demo.
+# A Job whose pod always fails, so the reader can watch the controller's
+# exponential backoff/retries and see the final BackoffLimitExceeded condition.
+# backoffLimit: 2 means 3 total pod attempts (initial + 2 retries).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backoff-demo
+  namespace: quiz-ns
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: fail
+        image: busybox:1.38
+        command: ["sh", "-c", "echo failing; exit 1"]

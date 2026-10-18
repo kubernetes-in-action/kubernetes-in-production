@@ -1,0 +1,51 @@
+# Chapter 4 starting state: the Quiz StatefulSet (MongoDB) with its headless
+# Service, created via "kubectl apply -f quiz.yaml" in section 4.1 ("Setting
+# up the example").  A StatefulSet is one object kubectl cannot create imperatively,
+# this is the only manifest the lab setup needs.
+apiVersion: v1
+kind: Service
+metadata:
+  name: quiz
+  namespace: quiz-ns
+spec:
+  clusterIP: None
+  selector:
+    app: quiz
+  ports:
+  - name: mongo
+    port: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quiz
+  namespace: quiz-ns
+spec:
+  serviceName: quiz
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quiz
+  template:
+    metadata:
+      labels:
+        app: quiz
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:8
+        ports:
+        - containerPort: 27017
+          name: mongo
+        volumeMounts:
+        - name: data
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
